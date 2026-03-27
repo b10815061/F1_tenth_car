@@ -21,9 +21,9 @@ class WallFollow(Node):
         self.scan_sub = self.create_subscription(LaserScan, lidarscan_topic, self.scan_callback, 10)
 
         # Set PID gains
-        self.kp = 1.0
-        self.kd = 0.25
-        self.ki = 0.0 
+        self.kp = 1.5
+        self.kd = 0.05
+        self.ki = 0.00
 
         # Store history
         self.integral = 0.0
@@ -33,9 +33,9 @@ class WallFollow(Node):
         # Store necessary values
         self.angle_min = 0.0
         self.angle_increment = 0.0
-        self.desired_dist = 0.75
+        self.desired_dist = 0.45
         self.L = 1.0
-        self.theta = np.pi * 4.5 / 18  # 50 degrees in radians
+        self.theta = np.pi * 5/18
 
     def get_range(self, range_data, angle):
         """
@@ -105,12 +105,16 @@ class WallFollow(Node):
 
         # Set velocity based on steering angle in degrees
         abs_angle_deg = np.abs(np.rad2deg(angle))
-        if abs_angle_deg < 10:
-            velocity = 1.5
+        if abs_angle_deg < 8:
+            velocity = 4.0
+        elif abs_angle_deg < 12:
+            velocity = 3.4
+        elif abs_angle_deg < 16:
+            velocity = 3.2
         elif abs_angle_deg < 20:
-            velocity = 1.0
+            velocity = 2.8
         else:
-            velocity = 0.5
+            velocity = 1.0
 
         # Fill and publish drive message
         drive_msg = AckermannDriveStamped()
